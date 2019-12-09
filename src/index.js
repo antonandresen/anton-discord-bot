@@ -14,7 +14,7 @@ const app = express();
 connectDiscordBot();
 
 // Middlewares.
-app.use(cors()); // Cors headerss.
+app.use(cors()); // Cors headers.
 app.use(express.json({ extended: false })); // Parse JSON.
 
 // Make sure everythings working endpoint.
