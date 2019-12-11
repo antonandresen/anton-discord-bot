@@ -42,7 +42,7 @@ module.exports = {
       play(message.client, data);
     } else {
       message.channel.send(
-        `Added to Queue: ${info.title} | Requested by: ${message.author.id}`
+        `Added to Queue: ${info.title} | Requested by: ${message.author.tag}`
       );
     }
 
@@ -60,25 +60,25 @@ async function play(client, data) {
   data.dispatcher = await data.connection.playStream(
     ytdl(data.queue[0].url, { filter: "audioonly" })
   );
-  data.dispatcher.guildID = data.guildID;
+  //data.dispatcher.guildID = data.guildID;
 
   data.dispatcher.once("end", () => {
-    finish(client, this);
+    finish(client, data);
   });
 }
 
-async function finish(client, dispatcher) {
-  const fetched = client.activeVoice.get(dispatcher.guildID);
+async function finish(client, data) {
+  const fetched = client.activeVoice.get(data.guildID);
   fetched.queue.shift();
 
   if (fetched.queue.length > 0) {
-    client.activeVoice.set(dispatcher.guildID, fetched);
+    client.activeVoice.set(data.guildID, fetched);
 
     play(client, fetched);
   } else {
-    client.activeVoice.delete(dispatcher.guildID);
+    client.activeVoice.delete(data.guildID);
 
-    const vc = client.guilds.get(dispatcher.guildID).me.voiceChannel;
+    const vc = client.guilds.get(data.guildID).me.voiceChannel;
     if (vc) await vc.leave();
   }
 }
