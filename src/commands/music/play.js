@@ -62,7 +62,7 @@ async function play(client, data) {
   );
   data.dispatcher.guildID = data.guildID;
 
-  data.dispatcher.once("finish", () => {
+  data.dispatcher.once("end", () => {
     finish(client, this);
   });
 }
