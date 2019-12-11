@@ -10,7 +10,7 @@ dotenv.config({ path: "./src/config.env" });
 // Init app.
 const app = express();
 
-// Connect discord bot.
+// Connnect discord bot.
 connectDiscordBot();
 
 // Middlewares.
