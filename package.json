@@ -14,7 +14,7 @@
     "discordjs",
     "discord.js"
   ],
-  "author": "Anton Andrésen <anton.andresen@hotmail.com> (anton.best)",
+  "author": "Anton Andrésen <anton.andresen@hotmail.com> (http://anton.best)",
   "license": "MIT",
   "dependencies": {
     "@discordjs/uws": "^10.149.0",
