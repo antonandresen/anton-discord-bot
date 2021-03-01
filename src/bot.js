@@ -7,7 +7,7 @@ const connectDiscordBot = () => {
   );
   ['command', 'event'].forEach((type) => require(`./handlers/${type}`)(client));
 
-  client.login(process.env.token);
+  client.login(process.env.test_token);
 };
 
 module.exports = {

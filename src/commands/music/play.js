@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 
 module.exports = {
   name: 'play',
@@ -32,19 +32,17 @@ module.exports = {
     data.guildID = message.guild.id;
 
     data.queue.push({
-      songTitle: info.title,
+      songTitle: info.videoDetails.title,
       requester: message.author.tag,
       url: args[0],
       announceChannel: message.channel.id,
     });
 
-    console.log('HELLO GAMING', data.queue[0]);
-
     if (!data.dispatcher) {
       play(message.client, data);
     } else {
       message.channel.send(
-        `Added to Queue: ${info.title} | Requested by: ${message.author.tag}`
+        `Added to Queue: ${info.videoDetails.title} | Requested by: ${message.author.tag}`
       );
     }
 
@@ -57,16 +55,16 @@ async function play(client, data) {
     data.queue[0].announceChannel
   );
   channelToAnnounceIn.send(
-    `Now Playing ${data.queue[0].songTitle} | Requested By ${data.queue[0].requester}`
+    `Now Playing: **${data.queue[0].songTitle}** | Requested By ${data.queue[0].requester}`
   );
 
-  data.dispatcher = await data.connection.play(
-    ytdl(data.queue[0].url, {
-      type: 'opus',
-      quality: 'highestaudio',
-      highWaterMark: 1024 * 1024 * 10,
-    })
-  );
+  const stream = await ytdl(data.queue[0].url);
+
+  data.dispatcher = await data.connection.play(stream, {
+    type: 'opus',
+    quality: 'highestaudio',
+    highWaterMark: 1024 * 1024 * 10,
+  });
   //data.dispatcher.guildID = data.guildID;
 
   data.dispatcher.once('finish', () => {
