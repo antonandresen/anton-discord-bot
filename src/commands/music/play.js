@@ -39,9 +39,9 @@ module.exports = {
     });
 
     if (!data.dispatcher) {
-      play(message.client, data);
+      data.dispatcher = await play(message.client, data);
     } else {
-      message.channel.send(
+      await message.channel.send(
         `Added to Queue: ${info.videoDetails.title} | Requested by: ${message.author.tag}`
       );
     }
@@ -54,22 +54,33 @@ async function play(client, data) {
   const channelToAnnounceIn = await client.channels.fetch(
     data.queue[0].announceChannel
   );
-  channelToAnnounceIn.send(
+  await channelToAnnounceIn.send(
     `Now Playing: **${data.queue[0].songTitle}** | Requested By ${data.queue[0].requester}`
   );
 
   const stream = await ytdl(data.queue[0].url);
 
-  data.dispatcher = await data.connection.play(stream, {
+  data.dispatcher = data.connection.play(stream, {
     type: 'opus',
     quality: 'highestaudio',
-    highWaterMark: 1024 * 1024 * 10,
+    // highWaterMark: 1024 * 1024 * 10, this option made it not possible to !skip
+    volume: false,
   });
   //data.dispatcher.guildID = data.guildID;
 
-  data.dispatcher.once('finish', () => {
+  data.dispatcher.on('finish', () => {
     finish(client, data);
   });
+
+  /*await new Promise((resolve, reject) => {
+    data.dispatcher.on('start', () => {
+      console.log('started');
+      resolve();
+    });
+    data.dispatcher.on('error', reject);
+  });*/
+
+  return data.dispatcher;
 }
 
 async function finish(client, data) {
@@ -85,5 +96,6 @@ async function finish(client, data) {
 
     const vc = data.connection;
     if (vc) await vc.disconnect();
+    message.channel.send('No songs left in queue, stopping the music...');
   }
 }

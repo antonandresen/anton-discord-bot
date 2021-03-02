@@ -1,7 +1,7 @@
 module.exports = {
-  name: 'stop',
-  description: 'Stop playing songs',
-  aliases: ['sstop', 'stopp'],
+  name: 'skip',
+  description: 'Stop currently playing song',
+  aliases: ['sskip', 'skipp'],
   usage: '[command name]',
   cooldown: 2,
   async execute(message, args) {
@@ -9,7 +9,7 @@ module.exports = {
 
     if (!message.member.voice)
       return message.channel.send(
-        'You have to be connected to the voice chat to stop the bot.'
+        'You have to be connected to the voice chat to skip songs.'
       );
 
     if (!voiceData.connection)
@@ -19,10 +19,7 @@ module.exports = {
       return message.channel.send(
         'You have to be connected to the voice chat to stop the bot.'
       );*/
-
-    message.client.activeVoice.delete(message.guild.id);
-    const vc = voiceData.connection;
-    if (vc) await vc.disconnect();
-    message.channel.send('Stopping the music...');
+    voiceData.dispatcher.end();
+    return message.channel.send('Skipping...');
   },
 };
