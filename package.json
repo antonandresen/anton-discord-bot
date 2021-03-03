@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "node-opus": "^0.3.3",
     "opusscript": "0.0.7",
-    "ytdl-core-discord": "^1.2.5"
+    "ytdl-core-discord": "^1.2.5",
+    "ytsr": "^3.3.1"
   }
 }

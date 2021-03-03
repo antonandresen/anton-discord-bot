@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core-discord');
+const ytsr = require('ytsr');
 
 module.exports = {
   name: 'play',
@@ -7,8 +8,8 @@ module.exports = {
   usage: '[command name]',
   cooldown: 2,
   async execute(message, args) {
-    if (!message.member.voice) {
-      return message.channel.send(
+    if (!message.member.voice.channel) {
+      return await message.channel.send(
         'You have to be in a voice channel to play a song.'
       );
     }
@@ -16,12 +17,30 @@ module.exports = {
     if (!args[0])
       return message.channel.send('Please provide a url or a search term.');
 
-    const isValidURL = ytdl.validateURL(args[0]);
+    let songInfo;
+    if (isUrl(args[0])) {
+      // User requested song with url - make sure its valid and fetch info.
+      const isValidURL = ytdl.validateURL(args[0]);
 
-    if (!isValidURL)
-      return message.channel.send('Please provide a **valid** url');
+      if (!isValidURL)
+        return message.channel.send('Please provide a **valid** url');
 
-    const info = await ytdl.getInfo(args[0]);
+      const info = await ytdl.getInfo(args[0]);
+      songInfo = {
+        url: args[0],
+        title: info.videoDetails.title,
+      };
+    } else {
+      // User requested song using search terms - search youtube for result info.
+      const fullSearchTerm = args.join(' ');
+      const top5SearchResults = await ytsr(fullSearchTerm, { limit: 5 });
+      const firstSearchResult = top5SearchResults.items[0];
+
+      songInfo = {
+        url: firstSearchResult.url,
+        title: firstSearchResult.title,
+      };
+    }
 
     const data = message.client.activeVoice.get(message.guild.id) || {};
 
@@ -32,9 +51,9 @@ module.exports = {
     data.guildID = message.guild.id;
 
     data.queue.push({
-      songTitle: info.videoDetails.title,
+      songTitle: songInfo.title,
       requester: message.author.tag,
-      url: args[0],
+      url: songInfo.url,
       announceChannel: message.channel.id,
     });
 
@@ -42,7 +61,7 @@ module.exports = {
       data.dispatcher = await play(message.client, data);
     } else {
       await message.channel.send(
-        `Added to Queue: ${info.videoDetails.title} | Requested by: ${message.author.tag}`
+        `Added to Queue: ${songInfo.title} | Requested by: ${message.author.tag}`
       );
     }
 
@@ -96,6 +115,14 @@ async function finish(client, data) {
 
     const vc = data.connection;
     if (vc) await vc.disconnect();
-    message.channel.send('No songs left in queue, stopping the music...');
+
+    const channelToAnnounceIn = await client.channels.fetch(
+      playedSong.announceChannel
+    );
+    channelToAnnounceIn.send('No songs left in queue, stopping the music...');
   }
 }
+
+const isUrl = (url) => {
+  return url.includes('youtube.com/');
+};

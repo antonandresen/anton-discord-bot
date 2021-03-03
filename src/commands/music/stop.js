@@ -7,7 +7,7 @@ module.exports = {
   async execute(message, args) {
     const voiceData = message.client.activeVoice.get(message.guild.id) || {};
 
-    if (!message.member.voice)
+    if (!message.member.voice.channel)
       return message.channel.send(
         'You have to be connected to the voice chat to stop the bot.'
       );
