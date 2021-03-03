@@ -33,12 +33,18 @@ module.exports = {
     } else {
       // User requested song using search terms - search youtube for result info.
       const fullSearchTerm = args.join(' ');
-      const top5SearchResults = await ytsr(fullSearchTerm, { limit: 5 });
-      const firstSearchResult = top5SearchResults.items[0];
+      const top5SearchResults = await ytsr(fullSearchTerm, { limit: 50 });
+      const firstVideoSearchResult = top5SearchResults.items.find(
+        (item) => item.type === 'video'
+      );
+      if (!firstVideoSearchResult)
+        return await message.channel.send(
+          'Could not find a song, skipping this request...'
+        );
 
       songInfo = {
-        url: firstSearchResult.url,
-        title: firstSearchResult.title,
+        url: firstVideoSearchResult.url,
+        title: firstVideoSearchResult.title,
       };
     }
 
