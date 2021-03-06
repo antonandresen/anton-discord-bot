@@ -19,33 +19,47 @@ module.exports = {
 
     let songInfo;
     if (isUrl(args[0])) {
-      // User requested song with url - make sure its valid and fetch info.
-      const isValidURL = ytdl.validateURL(args[0]);
+      try {
+        // User requested song with url - make sure its valid and fetch info.
+        const isValidURL = ytdl.validateURL(args[0]);
 
-      if (!isValidURL)
-        return message.channel.send('Please provide a **valid** url');
+        if (!isValidURL)
+          return message.channel.send('Please provide a **valid** url');
 
-      const info = await ytdl.getInfo(args[0]);
-      songInfo = {
-        url: args[0],
-        title: info.videoDetails.title,
-      };
-    } else {
-      // User requested song using search terms - search youtube for result info.
-      const fullSearchTerm = args.join(' ');
-      const top5SearchResults = await ytsr(fullSearchTerm, { limit: 50 });
-      const firstVideoSearchResult = top5SearchResults.items.find(
-        (item) => item.type === 'video'
-      );
-      if (!firstVideoSearchResult)
+        const info = await ytdl.getInfo(args[0]);
+        songInfo = {
+          url: args[0],
+          title: info.videoDetails.title,
+        };
+      } catch (error) {
+        console.error('error while getting info from youtube:', error);
         return await message.channel.send(
-          'Could not find a song, skipping this request...'
+          'Error getting song info from youtube...'
         );
+      }
+    } else {
+      try {
+        // User requested song using search terms - search youtube for result info.
+        const fullSearchTerm = args.join(' ');
+        const top5SearchResults = await ytsr(fullSearchTerm, { limit: 50 });
+        const firstVideoSearchResult = top5SearchResults.items.find(
+          (item) => item.type === 'video'
+        );
+        if (!firstVideoSearchResult)
+          return await message.channel.send(
+            'Could not find a song, skipping this request...'
+          );
 
-      songInfo = {
-        url: firstVideoSearchResult.url,
-        title: firstVideoSearchResult.title,
-      };
+        songInfo = {
+          url: firstVideoSearchResult.url,
+          title: firstVideoSearchResult.title,
+        };
+      } catch (error) {
+        console.error('error while searching youtube:', error);
+        return await message.channel.send(
+          'Error fetching song from youtube...'
+        );
+      }
     }
 
     const data = message.client.activeVoice.get(message.guild.id) || {};
@@ -130,5 +144,5 @@ async function finish(client, data) {
 }
 
 const isUrl = (url) => {
-  return url.includes('youtube.com/');
+  return url.includes('youtube.com/') || url.includes('youtu.be/');
 };
