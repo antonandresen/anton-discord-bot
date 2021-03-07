@@ -20,7 +20,7 @@ module.exports = async (client, reaction, user) => {
   );
 
   // Find a message from the correct user (hacky)
-  const messages = await message.channel.messages.fetch({ limit: 10 });
+  const messages = await message.channel.messages.fetch({ limit: 100 });
   const userMessage = messages.find((msg) => msg.author.id === userId);
 
   // delete the active pick.
