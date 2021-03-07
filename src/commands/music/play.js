@@ -17,14 +17,12 @@ module.exports = {
     if (!args[0])
       return message.channel.send('Please provide a url or a search term.');
 
-    let songInfo;
-    if (isUrl(args[0])) {
-      try {
-        // User requested song with url - make sure its valid and fetch info.
-        const isValidURL = ytdl.validateURL(args[0]);
+    const isValidURL = ytdl.validateURL(args[0]);
 
-        if (!isValidURL)
-          return message.channel.send('Please provide a **valid** url');
+    let songInfo;
+    if (isValidURL) {
+      try {
+        // User requested song with url - fetch songInfo from yt.
 
         const info = await ytdl.getInfo(args[0]);
         songInfo = {
@@ -40,6 +38,7 @@ module.exports = {
     } else {
       try {
         // User requested song using search terms - search youtube for result info.
+
         const fullSearchTerm = args.join(' ');
         const top5SearchResults = await ytsr(fullSearchTerm, { limit: 50 });
         const firstVideoSearchResult = top5SearchResults.items.find(
@@ -76,6 +75,9 @@ module.exports = {
       url: songInfo.url,
       announceChannel: message.channel.id,
     });
+
+    // We need to save here too probably.
+    // message.client.activeVoice.set(message.guild.id, data);
 
     if (!data.dispatcher) {
       data.dispatcher = await play(message.client, data);
