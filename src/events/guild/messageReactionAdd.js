@@ -22,6 +22,7 @@ module.exports = async (client, reaction, user) => {
   // Find a message from the correct user (hacky)
   const messages = await message.channel.messages.fetch({ limit: 100 });
   const userMessage = messages.find((msg) => msg.author.id === userId);
+  if (!userMessage) return;
 
   // delete the active pick.
   client.activeVoice.get(guildId).activePicks.delete(message.id);
