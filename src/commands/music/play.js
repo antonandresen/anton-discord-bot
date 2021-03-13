@@ -105,7 +105,7 @@ async function play(client, data) {
     type: 'opus',
     quality: 'highestaudio',
     // highWaterMark: 1024 * 1024 * 10, this option made it not possible to !skip
-    volume: 1,
+    volume: 2,
   });
   //data.dispatcher.guildID = data.guildID;
 
