@@ -1,7 +1,7 @@
 module.exports = {
   name: 'skip',
   description: 'Stop currently playing song',
-  aliases: ['sskip', 'skipp'],
+  aliases: ['sskip', 'skipp', 's'],
   usage: '[command name]',
   cooldown: 2,
   async execute(message, args) {

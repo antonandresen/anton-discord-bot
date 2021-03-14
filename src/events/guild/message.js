@@ -1,6 +1,22 @@
-const { Collection } = require("discord.js");
+const { Collection } = require('discord.js');
+const {
+  models: { User },
+} = require('../../db');
 
 module.exports = async (client, message) => {
+  // Remove the embed links from messages
+  if (message.author.bot) await message.suppressEmbeds(true);
+
+  // Check if user exists, if it doesn't. add it.
+  const user = await User.findOne({ discordId: message.author.id });
+  if (!user) {
+    const newUser = new User({
+      discordId: message.author.id,
+    });
+    await newUser.save();
+  }
+  message.dbUser = user;
+
   if (!message.content.startsWith(process.env.prefix) || message.author.bot)
     return;
 
@@ -12,12 +28,12 @@ module.exports = async (client, message) => {
   const command =
     client.commands.get(commandName) ||
     client.commands.find(
-      cmd => cmd.aliases && cmd.aliases.includes(commandName)
+      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
     );
 
   if (!command) return;
 
-  if (command.guildOnly && message.channel.type !== "text") {
+  if (command.guildOnly && message.channel.type !== 'text') {
     return message.reply("I can't execute that command inside DMs!");
   }
 
@@ -59,6 +75,6 @@ module.exports = async (client, message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply("there was an error trying to execute that command!");
+    message.reply('there was an error trying to execute that command!');
   }
 };

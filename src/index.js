@@ -1,14 +1,18 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
 
-const { connectDiscordBot } = require("./bot");
+const { connectDiscordBot } = require('./bot');
+const { connectDB } = require('./db');
 
 // Load env
-dotenv.config({ path: "./src/config.env" });
+dotenv.config({ path: './src/config.env' });
 
 // Init app.
 const app = express();
+
+//Connect to DB
+connectDB();
 
 // Connnect discord bot.
 connectDiscordBot();
@@ -18,13 +22,13 @@ app.use(cors()); // Cors headers.
 app.use(express.json({ extended: false })); // Parse JSON.
 
 // Make sure everythings working endpoint.
-app.get("/", (req, res) => {
-  res.json({ hi: "its working!" });
+app.get('/', (req, res) => {
+  res.json({ hi: 'its working!' });
 });
 
 // Handle production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(__dirname + "/public"));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(__dirname + '/public'));
 }
 
 // Start server.
