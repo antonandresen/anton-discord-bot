@@ -9,7 +9,8 @@ module.exports = async (client, reaction, user) => {
   const voiceData = client.activeVoice.get(guildId) || {};
   if (!voiceData) return console.error('No voicedata, weird.');
 
-  const songInfos = voiceData.activePicks.get(message.id);
+  const songInfos =
+    voiceData.activePicks && voiceData.activePicks.get(message.id);
   if (!songInfos) return console.error('No songInfos, weird.');
 
   if (songInfos[0].userId !== userId) return;
