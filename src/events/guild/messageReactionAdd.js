@@ -19,6 +19,7 @@ module.exports = async (client, reaction, user) => {
   const emoteIndex = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'].findIndex(
     (emoji) => emoji === reaction.emoji.name
   );
+  console.log({ emoteIndex });
   // User reacted with other emoji.
   if (!emoteIndex) {
     return console.log('user reacted with other emoji.');
