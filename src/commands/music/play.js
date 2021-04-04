@@ -1,6 +1,14 @@
 const ytdl = require('ytdl-core-discord');
 const ytsr = require('ytsr');
 
+const reqOpts = {
+  requestOptions: {
+    headers: {
+      cookie: process.env.cookieString,
+    },
+  },
+};
+
 module.exports = {
   name: 'play',
   description: 'Play a song',
@@ -24,7 +32,7 @@ module.exports = {
       try {
         // User requested song with url - fetch songInfo from yt.
 
-        const info = await ytdl.getInfo(args[0]);
+        const info = await ytdl.getInfo(args[0], reqOpts);
         songInfo = {
           url: args[0],
           title: info.videoDetails.title,
@@ -99,7 +107,7 @@ async function play(client, data) {
     `Now Playing: **${data.queue[0].songTitle}** | Requested By ${data.queue[0].requester}`
   );
 
-  const stream = await ytdl(data.queue[0].url);
+  const stream = await ytdl(data.queue[0].url, reqOpts);
 
   data.dispatcher = data.connection.play(stream, {
     type: 'opus',
