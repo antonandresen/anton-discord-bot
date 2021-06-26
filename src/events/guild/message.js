@@ -10,8 +10,12 @@ module.exports = async (client, message) => {
   // MÅNSSON CHECKS
   if (message.author.id === '136919142174294016') {
     console.log('MÅNSSON TYPED');
-    await message.delete();
-    return message.reply('haha, trollad månsson :D:D');
+    if (message.content.includes(':deaf_man:')) {
+      await message.delete();
+      return message.reply(
+        'Njaaa månsson, dedär vet jag inte om jag riktigt går med på :))'
+      );
+    }
   }
 
   // Check if user exists, if it doesn't. add it.
