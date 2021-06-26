@@ -7,6 +7,13 @@ module.exports = async (client, message) => {
   // Remove the embed links from messages
   if (message.author.bot) await message.suppressEmbeds(true);
 
+  // MÅNSSON CHECKS
+  if (message.author.id === '136919142174294016') {
+    console.log('MÅNSSON TYPED');
+    await message.delete();
+    return message.reply('haha, trollad månsson :D:D');
+  }
+
   // Check if user exists, if it doesn't. add it.
   const user = await User.findOne({ discordId: message.author.id });
   if (!user) {
