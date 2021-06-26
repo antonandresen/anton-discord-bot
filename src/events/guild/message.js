@@ -10,7 +10,7 @@ module.exports = async (client, message) => {
   // MÅNSSON CHECKS
   if (message.author.id === '136919142174294016') {
     console.log('MÅNSSON TYPED: ', message.content);
-    if (message.content.includes(':deaf_man:')) {
+    if (message.content.includes('🧏‍♂️')) {
       await message.delete();
       return message.reply(
         'Njaaa månsson, dedär vet jag inte om jag riktigt går med på :))'
