@@ -1,6 +1,6 @@
 const constants = require('../../constants');
 
-module.exports = (oldMessage, newMessage) => {
+module.exports = async (oldMessage, newMessage) => {
   console.log('messageUpdate:', newMessage);
 
   // MÅNSSON CHECKS
