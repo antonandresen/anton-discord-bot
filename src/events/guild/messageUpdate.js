@@ -1,11 +1,14 @@
 const constants = require('../../constants');
 
 module.exports = async (oldMessage, newMessage) => {
-  console.log('messageUpdate:', newMessage);
-
   // MÅNSSON CHECKS
   if (newMessage.author.id === '136919142174294016') {
-    console.log('MÅNSSON TYPED: ', newMessage.content);
+    console.log(
+      'MÅNSSON EDITED: ',
+      oldMessage.content,
+      'to',
+      newMessage.content
+    );
     if (
       constants.MANSSON_BANNED_SEQUENCES.find((seq) =>
         newMessage.content.includes(seq)
