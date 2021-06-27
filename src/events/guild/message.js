@@ -2,6 +2,7 @@ const { Collection } = require('discord.js');
 const {
   models: { User },
 } = require('../../db');
+const constants = require('../../constants');
 
 module.exports = async (client, message) => {
   // Remove the embed links from messages
@@ -10,7 +11,11 @@ module.exports = async (client, message) => {
   // MÅNSSON CHECKS
   if (message.author.id === '136919142174294016') {
     console.log('MÅNSSON TYPED: ', message.content);
-    if (message.content.includes('🧏‍♂️')) {
+    if (
+      constants.MANSSON_BANNED_SEQUENCES.find((seq) =>
+        message.content.includes(seq)
+      )
+    ) {
       await message.delete();
       return message.reply(
         'Njaaa månsson, dedär vet jag inte om jag riktigt går med på :))'
