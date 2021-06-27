@@ -1,9 +1,8 @@
 const constants = require('../../constants');
 
-module.exports = async (...args) => {
-  console.log(args);
+module.exports = async (client, oldMessage, newMessage) => {
   // MÅNSSON CHECKS
-  /*if (newMessage.author.id === '136919142174294016') {
+  if (newMessage.author.id === '136919142174294016') {
     console.log(
       'MÅNSSON EDITED: ',
       oldMessage.content,
@@ -20,5 +19,5 @@ module.exports = async (...args) => {
         'Njaaa månsson, dedär vet jag inte om jag riktigt går med på :))'
       );
     }
-  }*/
+  }
 };
